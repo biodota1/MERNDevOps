@@ -10,7 +10,7 @@ pipeline {
 
         stage('Test') {
             steps {
-                // Add your testing steps here
+                sh 'npm test'
             }
         }
 
