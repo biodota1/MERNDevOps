@@ -4,27 +4,23 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                script {
-                    // Build Docker image
-                    def app = docker.build("mern-dev-ops:${env.BUILD_ID}")
-                }
+                sh 'npm install'
             }
         }
+
         stage('Test') {
             steps {
-                script {
-                    // Test Docker image
-                    docker.image("mern-dev-ops:${env.BUILD_ID}").inside {
-                        sh 'npm test'
-                    }
-                }
+                // Add your testing steps here
             }
         }
+
         stage('Deploy') {
             steps {
                 script {
-                    // Deploy Docker image (replace with your deployment strategy)
-                    docker.image("mern-dev-ops:${env.BUILD_ID}").run('-p 3000:3000')
+                    docker.build("express-be:${env.BUILD_ID}")
+                    docker.withRegistry('http://your-docker-registry-url/', 'docker-credentials-id') {
+                        docker.image("express-be:${env.BUILD_ID}").push()
+                    }
                 }
             }
         }
